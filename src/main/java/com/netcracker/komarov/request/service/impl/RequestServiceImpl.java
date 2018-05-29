@@ -55,7 +55,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Transactional
     @Override
-    public Collection<RequestDTO> findRequests() {
+    public Collection<RequestDTO> findAllRequests() {
         LOGGER.info("Select all requests");
         return convertCollection(requestRepository.findAll());
     }

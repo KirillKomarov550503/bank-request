@@ -13,5 +13,5 @@ public interface RequestService {
 
     void deleteById(long id) throws NotFoundException;
 
-    Collection<RequestDTO> findRequests();
+    Collection<RequestDTO> findAllRequests();
 }

@@ -38,8 +38,8 @@ public class RequestController {
 
     @ApiOperation(value = "Selecting all unlock requests")
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity findRequests() {
-        Collection<RequestDTO> dtos = requestService.findRequests();
+    public ResponseEntity findAllRequests() {
+        Collection<RequestDTO> dtos = requestService.findAllRequests();
         return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
 
