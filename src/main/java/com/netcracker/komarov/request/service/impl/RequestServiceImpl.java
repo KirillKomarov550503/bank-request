@@ -45,8 +45,19 @@ public class RequestServiceImpl implements RequestService {
             request = requestRepository.save(new Request(requestDTO.getEntityId(), requestDTO.getStatus()));
             LOGGER.info("Request was added to database with ID " + request.getId());
         } else {
-            String error = "Account with ID " + requestDTO.getEntityId()
-                    + " and status " + requestDTO.getStatus() + " have already added to requests";
+            String type;
+            switch (requestDTO.getStatus()) {
+                case CARD:
+                    type = "Card";
+                    break;
+                case ACCOUNT:
+                    type = "Account";
+                    break;
+                default:
+                    type = "";
+                    break;
+            }
+            String error = type + " with ID " + requestDTO.getEntityId() + " have already added to requests";
             LOGGER.error(error);
             throw new LogicException(error);
         }
