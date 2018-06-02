@@ -12,6 +12,12 @@ public class RequestDTO implements Serializable {
     private Long entityId;
     private Status status;
 
+    public RequestDTO(Long id, Long entityId, Status status) {
+        this.id = id;
+        this.entityId = entityId;
+        this.status = status;
+    }
+
     public RequestDTO() {
     }
 
