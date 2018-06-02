@@ -1,5 +1,6 @@
 package com.netcracker.komarov.request.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcracker.komarov.request.service.RequestService;
 import com.netcracker.komarov.request.service.dto.entity.RequestDTO;
 import com.netcracker.komarov.request.service.exception.LogicException;
@@ -16,10 +17,12 @@ import java.util.Collection;
 @RequestMapping("/bank/v1/requests")
 public class RequestController {
     private RequestService requestService;
+    private ObjectMapper objectMapper;
 
     @Autowired
-    public RequestController(RequestService requestService) {
+    public RequestController(RequestService requestService, ObjectMapper objectMapper) {
         this.requestService = requestService;
+        this.objectMapper = objectMapper;
     }
 
     @ApiOperation(value = "Save request to unlock entity")
@@ -70,10 +73,10 @@ public class RequestController {
     }
 
     private ResponseEntity getNotFoundResponseEntity(String message) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(objectMapper.valueToTree(message));
     }
 
     private ResponseEntity getInternalServerErrorResponseEntity(String message) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(objectMapper.valueToTree(message));
     }
 }
