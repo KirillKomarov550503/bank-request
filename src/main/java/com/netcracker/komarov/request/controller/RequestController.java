@@ -39,14 +39,14 @@ public class RequestController {
     }
 
 
-    @ApiOperation(value = "Selecting all unlock requests")
+    @ApiOperation(value = "Select all unlock requests")
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity findAllRequests() {
         Collection<RequestDTO> dtos = requestService.findAllRequests();
         return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
 
-    @ApiOperation(value = "Deleting request by ID")
+    @ApiOperation(value = "Delete request by ID")
     @RequestMapping(value = "/{requestId}", method = RequestMethod.DELETE)
     public ResponseEntity deleteById(@PathVariable long requestId) {
         ResponseEntity responseEntity;
@@ -59,7 +59,7 @@ public class RequestController {
         return responseEntity;
     }
 
-    @ApiOperation(value = "Selecting request by ID")
+    @ApiOperation(value = "Select request by ID")
     @RequestMapping(value = "/{requestId}", method = RequestMethod.GET)
     public ResponseEntity findById(@PathVariable long requestId) {
         ResponseEntity responseEntity;

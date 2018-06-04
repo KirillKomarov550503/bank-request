@@ -10,6 +10,7 @@ import com.netcracker.komarov.request.service.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@PropertySource("classpath:application-error.properties")
 public class RequestServiceImpl implements RequestService {
     private RequestRepository requestRepository;
     private RequestConverter converter;
@@ -99,7 +101,7 @@ public class RequestServiceImpl implements RequestService {
             requestRepository.deleteRequestById(id);
             LOGGER.info("Request was deleted successful");
         } else {
-            String error = environment.getProperty("error.search");
+            String error = environment.getProperty("error.search" + id);
             LOGGER.error(error);
             throw new NotFoundException(error);
         }
