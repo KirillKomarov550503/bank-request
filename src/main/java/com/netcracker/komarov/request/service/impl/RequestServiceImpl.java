@@ -10,6 +10,7 @@ import com.netcracker.komarov.request.service.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,11 +23,14 @@ public class RequestServiceImpl implements RequestService {
     private RequestRepository requestRepository;
     private RequestConverter converter;
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestServiceImpl.class);
+    private Environment environment;
 
     @Autowired
-    public RequestServiceImpl(RequestRepository requestRepository, RequestConverter converter) {
+    public RequestServiceImpl(RequestRepository requestRepository, RequestConverter converter,
+                              Environment environment) {
         this.requestRepository = requestRepository;
         this.converter = converter;
+        this.environment = environment;
     }
 
     private Collection<RequestDTO> convertCollection(Collection<Request> requests) {
@@ -80,7 +84,7 @@ public class RequestServiceImpl implements RequestService {
             request = optionalRequest.get();
             LOGGER.info("Return request with ID: " + id);
         } else {
-            String error = "There is no such request in database";
+            String error = environment.getProperty("error.search");
             LOGGER.error(error);
             throw new NotFoundException(error);
         }
@@ -95,7 +99,7 @@ public class RequestServiceImpl implements RequestService {
             requestRepository.deleteRequestById(id);
             LOGGER.info("Request was deleted successful");
         } else {
-            String error = "There is no such request in database";
+            String error = environment.getProperty("error.search");
             LOGGER.error(error);
             throw new NotFoundException(error);
         }
