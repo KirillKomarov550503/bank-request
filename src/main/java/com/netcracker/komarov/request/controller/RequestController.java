@@ -1,7 +1,6 @@
 package com.netcracker.komarov.request.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netcracker.komarov.request.dao.entity.Status;
 import com.netcracker.komarov.request.service.RequestService;
 import com.netcracker.komarov.request.service.dto.entity.RequestDTO;
 import com.netcracker.komarov.request.service.exception.LogicException;
@@ -13,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/bank/v1/requests")
@@ -47,17 +47,19 @@ public class RequestController {
         return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
 
+    @ApiOperation(value = "Delete request by entity ID and status")
+    @DeleteMapping
+    public ResponseEntity deleteByMap(@RequestBody Map<String, Long> entityIdsMap) {
+        requestService.deleteByEntityIdAndStatus(entityIdsMap);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     @ApiOperation(value = "Delete request by ID")
     @RequestMapping(value = "/{requestId}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteById(@PathVariable long requestId,
-                                     @RequestParam(name = "status", required = false) String status) {
+    public ResponseEntity deleteById(@PathVariable long requestId) {
         ResponseEntity responseEntity;
         try {
-            if (status == null) {
-                requestService.deleteById(requestId);
-            } else {
-                requestService.deleteByEntityIdAndStatus(requestId, Enum.valueOf(Status.class, status.toUpperCase()));
-            }
+            requestService.deleteById(requestId);
             responseEntity = ResponseEntity.status(HttpStatus.OK).build();
         } catch (NotFoundException e) {
             responseEntity = getErrorResponse(HttpStatus.NOT_FOUND, e.getMessage());

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -110,9 +111,9 @@ public class RequestServiceImpl implements RequestService {
 
     @Transactional
     @Override
-    public void deleteByEntityIdAndStatus(long entityId, Status status) {
+    public void deleteByEntityIdAndStatus(Map<String, Long> entityIdsMap) {
         LOGGER.info("Delete by entity ID and status");
-        requestRepository.deleteRequestByEntityIdAndStatus(entityId, status);
-
+        entityIdsMap.forEach((key, value) -> requestRepository
+                .deleteRequestByEntityIdAndStatus(value, Enum.valueOf(Status.class, key)));
     }
 }
