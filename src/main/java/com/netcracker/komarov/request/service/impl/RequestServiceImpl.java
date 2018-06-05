@@ -1,6 +1,7 @@
 package com.netcracker.komarov.request.service.impl;
 
 import com.netcracker.komarov.request.dao.entity.Request;
+import com.netcracker.komarov.request.dao.entity.Status;
 import com.netcracker.komarov.request.dao.repository.RequestRepository;
 import com.netcracker.komarov.request.service.RequestService;
 import com.netcracker.komarov.request.service.dto.converter.impl.RequestConverter;
@@ -105,5 +106,13 @@ public class RequestServiceImpl implements RequestService {
             LOGGER.error(error);
             throw new NotFoundException(error);
         }
+    }
+
+    @Transactional
+    @Override
+    public void deleteByEntityIdAndStatus(long entityId, Status status) {
+        LOGGER.info("Delete by entity ID and status");
+        requestRepository.deleteRequestByEntityIdAndStatus(entityId, status);
+
     }
 }

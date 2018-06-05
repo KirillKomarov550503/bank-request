@@ -1,6 +1,7 @@
 package com.netcracker.komarov.request.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.netcracker.komarov.request.dao.entity.Status;
 import com.netcracker.komarov.request.service.RequestService;
 import com.netcracker.komarov.request.service.dto.entity.RequestDTO;
 import com.netcracker.komarov.request.service.exception.LogicException;
@@ -33,7 +34,7 @@ public class RequestController {
             RequestDTO dto = requestService.save(requestDTO);
             responseEntity = ResponseEntity.status(HttpStatus.CREATED).body(dto);
         } catch (LogicException e) {
-            responseEntity = getInternalServerErrorResponseEntity(e.getMessage());
+            responseEntity = getErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return responseEntity;
     }
@@ -48,13 +49,18 @@ public class RequestController {
 
     @ApiOperation(value = "Delete request by ID")
     @RequestMapping(value = "/{requestId}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteById(@PathVariable long requestId) {
+    public ResponseEntity deleteById(@PathVariable long requestId,
+                                     @RequestParam(name = "status", required = false) String status) {
         ResponseEntity responseEntity;
         try {
-            requestService.deleteById(requestId);
+            if (status == null) {
+                requestService.deleteById(requestId);
+            } else {
+                requestService.deleteByEntityIdAndStatus(requestId, Enum.valueOf(Status.class, status.toUpperCase()));
+            }
             responseEntity = ResponseEntity.status(HttpStatus.OK).build();
         } catch (NotFoundException e) {
-            responseEntity = getNotFoundResponseEntity(e.getMessage());
+            responseEntity = getErrorResponse(HttpStatus.NOT_FOUND, e.getMessage());
         }
         return responseEntity;
     }
@@ -67,16 +73,12 @@ public class RequestController {
             RequestDTO dto = requestService.findById(requestId);
             responseEntity = ResponseEntity.status(HttpStatus.OK).body(dto);
         } catch (NotFoundException e) {
-            responseEntity = getNotFoundResponseEntity(e.getMessage());
+            responseEntity = getErrorResponse(HttpStatus.NOT_FOUND, e.getMessage());
         }
         return responseEntity;
     }
 
-    private ResponseEntity getNotFoundResponseEntity(String message) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(objectMapper.valueToTree(message));
-    }
-
-    private ResponseEntity getInternalServerErrorResponseEntity(String message) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(objectMapper.valueToTree(message));
+    private ResponseEntity getErrorResponse(HttpStatus httpStatus, String message) {
+        return ResponseEntity.status(httpStatus).body(objectMapper.valueToTree(message));
     }
 }
