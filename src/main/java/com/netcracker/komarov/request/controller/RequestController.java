@@ -1,10 +1,10 @@
 package com.netcracker.komarov.request.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcracker.komarov.request.service.RequestService;
 import com.netcracker.komarov.request.service.dto.entity.RequestDTO;
 import com.netcracker.komarov.request.service.exception.LogicException;
 import com.netcracker.komarov.request.service.exception.NotFoundException;
+import com.netcracker.komarov.request.service.util.ErrorJson;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,12 +18,12 @@ import java.util.Map;
 @RequestMapping("/bank/v1/requests")
 public class RequestController {
     private RequestService requestService;
-    private ObjectMapper objectMapper;
+    private ErrorJson errorJson;
 
     @Autowired
-    public RequestController(RequestService requestService, ObjectMapper objectMapper) {
+    public RequestController(RequestService requestService, ErrorJson errorJson) {
         this.requestService = requestService;
-        this.objectMapper = objectMapper;
+        this.errorJson = errorJson;
     }
 
     @ApiOperation(value = "Save request to unlock entity")
@@ -81,6 +81,6 @@ public class RequestController {
     }
 
     private ResponseEntity getErrorResponse(HttpStatus httpStatus, String message) {
-        return ResponseEntity.status(httpStatus).body(objectMapper.valueToTree(message));
+        return ResponseEntity.status(httpStatus).body(errorJson.getErrorJson(message));
     }
 }
